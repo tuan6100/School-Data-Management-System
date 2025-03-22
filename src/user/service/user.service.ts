@@ -1,9 +1,9 @@
 import {BadRequestException, Injectable, InternalServerErrorException} from '@nestjs/common'
-import { UpdateUserDto } from './dto/update-user.dto'
-import UserAuth from "./entities/user.entity"
-import {Role} from "./enum/role.enum"
+import { UpdateUserDto } from '../dto/update-user.dto'
+import UserAuth from "../entities/user.entity"
+import {Role} from "../enum/role.enum"
 import {EntityManager, Transactional} from "@mikro-orm/postgresql"
-import {encryptPassword, generateStrongPassword} from "./user.util"
+import {encryptPassword, generateStrongPassword} from "../user.util"
 import {logger} from "@mikro-orm/nestjs";
 
 @Injectable()

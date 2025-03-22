@@ -5,7 +5,7 @@ import {Student} from "./entities/student.entity"
 import {EntityManager, Transactional} from "@mikro-orm/postgresql"
 import {InjectMapper} from "@automapper/nestjs"
 import {createMap, Mapper} from "@automapper/core"
-import {UserService} from "../user/user.service"
+import {UserService} from "../user/service/user.service"
 import {UpdateUserDto} from "../user/dto/update-user.dto"
 import {formatDateOnly} from "./student.util";
 
