@@ -1,0 +1,50 @@
+[
+  {
+    "citizenId": "0123456789012",
+    "firstname": "Minh",
+    "midname": "Van",
+    "lastname": "Nguyen",
+    "dob": "2005-07-15T00:00:00.000Z",
+    "gender": "M",
+    "nationality": "vi",
+    "pod": "Hanoi",
+    "address": "123 Le Loi Street, District 1, Ho Chi Minh City",
+    "educationLevel": 10
+  },
+  {
+    "citizenId": "9876543210123",
+    "firstname": "Linh",
+    "midname": "Thi",
+    "lastname": "Tran",
+    "dob": "2006-03-22T00:00:00.000Z",
+    "gender": "F",
+    "nationality": "vi",
+    "pod": "Da Nang",
+    "address": "456 Nguyen Hue Boulevard, Hai Chau District, Da Nang",
+    "educationLevel": 11
+  },
+  {
+    "citizenId": "5678901234567",
+    "firstname": "Quang",
+    "midname": "Duc",
+    "lastname": "Pham",
+    "dob": "2004-11-08T00:00:00.000Z",
+    "gender": "M",
+    "nationality": "us",
+    "pod": "San Francisco",
+    "address": "789 Tran Hung Dao Street, District 5, Ho Chi Minh City",
+    "educationLevel": 12
+  },
+  {
+    "citizenId": "2345678901234",
+    "firstname": "Hoa",
+    "midname": "Thi",
+    "lastname": "Le",
+    "dob": "2007-09-30T00:00:00.000Z",
+    "gender": "F",
+    "nationality": "vi",
+    "pod": "Hue",
+    "address": "321 Phan Chu Trinh Street, Hoan Kiem District, Hanoi",
+    "educationLevel": 9
+  }
+]

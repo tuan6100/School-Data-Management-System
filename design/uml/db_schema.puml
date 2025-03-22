@@ -1,0 +1,136 @@
+@startuml
+skinparam linetype ortho
+
+entity "user" {
+      + user_id: bigint
+      --
+      email: varchar
+      password: varchar
+      role: varchar
+      cityzen_id_code: varchar(13)
+      created_at: datetime
+      updated_at: datetime
+    }
+
+entity "student" {
+      + student_id: bigint <FK>
+      --
+      first_name: varchar(10)
+      mid_name: varchar(10)
+      last_name: varchar(10)
+      gender: varchar(1)
+      dob: datetime
+      pob: varchar(10)
+      address: varchar(50)
+      nationality: varchar(2)
+      education_level: int
+      admission_date: datetime
+      version: int
+      ~ student_parent_id: bigint
+}
+
+entity "student_parent" {
+      + student_parent_id: bigint
+      --
+      father_fullname: varchar(30)
+      father_citizen_id: varchar(20)
+      father_phonenumber: varchar(10)
+      mother_fullname: varchar(30)
+      mother_citizen_id: varchar(20)
+      mother_phonenumber: varchar(10)
+      address: varchar(50)
+
+}
+
+entity "teacher" {
+      + teacher_id: bigint <FK>
+      --
+      first_name: varchar(10)
+      mid_name: varchar(10)
+      last_name: varchar(10)
+      gender: varchar(1)
+      dob: datetime
+      pob: varchar(10)
+      address: varchar(50)
+      contract_number: varchar(10)
+      ~ teaching_subject: bigint
+}
+
+entity "class" {
+    + class_id: bigint
+    --
+    class_name: varchar
+    nien_khoa: varchar(10)
+    amount_students: int
+    ~ classroom_id: bigint
+    ~ home_teacher_id: bigint
+    ~ subject_combination_id: bigint
+}
+
+entity "classroom" {
+    + classroom_id: bigint
+    --
+    classroom_label: int
+    floor: int
+    capacity: int
+}
+
+entity "student_class" {
+    + student_class_id: bigint
+    --
+    academic_year: varchar
+    status: varchar
+    ~ student_id: bigint
+    ~ class_id: bigint
+}
+
+entity "teacher_class" {
+    + teacher_class_id: bigint
+    --
+    academic_year: varchar
+    status: varchar
+    ~ teacher_id: bigint
+    ~ class_id: bigint
+}
+
+entity "subject" {
+    + subject_id: bigint
+    --
+    subject_name: varchar
+    num_of_lessions: int
+}
+
+entity "subject_combination" {
+    + subject_combination_id: bigint
+    --
+     subject_combination_name: varchar
+     field_of_science: varchar
+    ~ subject_id: bigint
+}
+
+entity "student_subject" {
+    + student_subject_id: bigint}
+    --
+    ~ student_id: bigint
+    ~ subject_id: bigint
+    ~ class_id: bigint
+    semester: smallint
+    first_score: float
+    midterm_score: float
+    final_score: float
+}
+
+
+"user" ||--|| "student"
+"user" ||--|| "teacher"
+"student" }|--|| "student_parent"
+"student" ||--|| "student_class"
+"student_class" }--|| "class"
+"teacher" ||--|{ "teacher_class"
+"class" ||--|{ "teacher_class"
+"class" }|--|| "classroom"
+"teacher" ||--|| "subject"
+"subject" }|--|| "subject_combination"
+
+
+@enduml

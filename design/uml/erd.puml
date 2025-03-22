@@ -1,0 +1,39 @@
+@startchen
+left to right direction
+
+entity Student {
+}
+entity StudentParent {
+}
+entity Teacher {
+}
+entity Class {
+}
+entity Classroom {
+}
+entity Subject {
+}
+
+relationship Have {
+}
+relationship Study {
+}
+relationship Teach {
+}
+relationship Study_in {
+}
+
+Student -N- Have
+Have -1- StudentParent
+Student -N- Study
+Study -1- Class
+Student -N- Study
+Study -N- Teacher
+Teacher -N- Teach
+Teach -N- Class
+Student -N- Study
+Study -N- Subject
+Class -N- Study_in
+Study_in -N- Classroom
+
+@endchen

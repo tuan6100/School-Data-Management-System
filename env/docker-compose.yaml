@@ -1,0 +1,21 @@
+networks:
+  default:
+    driver: bridge
+
+services:
+  postgres:
+    container_name: postgresql
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    user: postgres
+    environment:
+      POSTGRES_USER: tuan
+      POSTGRES_PASSWORD: 20226100
+      POSTGRES_DB: high_school_db
+    networks:
+        - default
+    volumes:
+      - ./postgres/data/:/var/lib/postgresql/data/
+      - ./postgres/config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
