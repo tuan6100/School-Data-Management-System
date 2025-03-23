@@ -43,24 +43,22 @@ export class UserService {
     return user?.email ?? null
   }
 
-
-  async update(updateUserDto: UpdateUserDto) {
-    const user = await this.em.findOne(
-      UserAuth, { userId: updateUserDto.userId }
-    );
-    if (!user) {
-      throw new BadRequestException("User not found");
-    }
-    if (updateUserDto.email !== undefined) {
-      user.email = updateUserDto.email;
-    }
-    if (updateUserDto.password !== undefined) {
-      user.password = updateUserDto.password;
-    }
-    await this.em.nativeUpdate(UserAuth, { userId: updateUserDto.userId }, user);
+  async updateEmail(updateUserDto: UpdateUserDto, email: string) {
+    const query = `
+        update users set users.email = ?1
+        where users.user_id = ?2 and users.role = ?3
+    `
+    await this.em.getConnection().execute(query, [email, updateUserDto.userId, updateUserDto.role])
   }
 
-
+  async updatePassword(updateUserDto: UpdateUserDto, password: string) {
+    const encryptedPassword = encryptPassword(password)
+    const query = `
+        update users set users.password = ?1
+        where users.user_id = ?2 and users.role = ?3
+    `
+    await this.em.getConnection().execute(query, [encryptedPassword, updateUserDto.userId, updateUserDto.role])
+  }
 
   async remove(id: number, role: string) {
     const user = await this.em.findOne(

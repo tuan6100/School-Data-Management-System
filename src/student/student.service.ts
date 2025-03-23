@@ -81,6 +81,7 @@ export class StudentService {
 
   @Transactional()
   async update(id: number, updateStudentDto: UpdateStudentDto): Promise<Object> {
+    // TODO: backup the old versions to Mongodb
     const student = await this.em.findOne(Student, { studentId: id })
     if (!student) throw new BadRequestException(`Student with id ${id} not found`)
     const updateData: Partial<Student> = {}
@@ -101,8 +102,7 @@ export class StudentService {
       const midName = updateData.midName ?? student.midName
       const lastName = updateData.lastName ?? student.lastName
       newEmail = `${lastName}.${firstName.charAt(0)}${midName.charAt(0)}${id}@school.edu.vn`
-      const updateUserDto = new UpdateUserDto.Builder().withUserId(id).withEmail(newEmail).withRole("student").build()
-      await this.userService.update(updateUserDto)
+      await this.userService.updateEmail(new UpdateUserDto(id, "student"), newEmail)
     }
     Object.assign(student, updateData);
     await this.em.persistAndFlush(student);

@@ -1,24 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './service/user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from "@nestjs/common";
+import { UserService } from "./service/user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import * as process from 'node:process';
 
-@Controller('user')
+@Controller(`${process.env.API_PREFIX}/user`)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get("/get-all")
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number, @Param('role') role: string) {
+  @Get("/get")
+  findOne(@Query("id") id: number, @Param("role") role: string) {
     return this.userService.findOneEmail(id, role);
   }
 
-  @Patch(':id')
-  update(@Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto);
+  @Put("/update-password")
+  updatePassword(@Query("password") newPassword: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updatePassword(updateUserDto, newPassword);
   }
 }
