@@ -28,38 +28,34 @@ export function encryptPassword(password: string) {
     return hash(password, { hashLength: 32, salt })
 }
 
-const ALGORITHM = 'aes-256-cbc'
+
 const SECRET_KEY = scryptSync(`${process.env.EMAIL_ENCRYPTION_KEY}`, 'salt', 32)
-const IV_LENGTH = 16
+const FIXED_IV = Buffer.from('0123456789abcdef0123456789abcdef').subarray(0, 16)
 
 export function encryptEmail(email: string): string {
     try {
-        const iv = randomBytes(IV_LENGTH)
         const cipher = createCipheriv(
           'aes-256-cbc',
           Buffer.from(SECRET_KEY),
-          iv
+          FIXED_IV
         )
         let encrypted = Buffer.concat([
             cipher.update(email, 'utf8'),
             cipher.final()
         ])
-        return Buffer.concat([iv, encrypted]).toString('base64')
+        return encrypted.toString('base64')
     } catch (error) {
         throw new InternalServerErrorException(`Email encryption failed: ${error.message}`)
     }
 }
 
-
 export function decryptEmail(encryptedEmail: string): string {
     try {
-        const encryptedBuffer = Buffer.from(encryptedEmail, 'base64')
-        const iv = encryptedBuffer.subarray(0, IV_LENGTH)
-        const encryptedData = encryptedBuffer.subarray(IV_LENGTH)
+        const encryptedData = Buffer.from(encryptedEmail, 'base64')
         const decipher = createDecipheriv(
           'aes-256-cbc',
           Buffer.from(SECRET_KEY),
-          iv
+          FIXED_IV
         )
         let decrypted = Buffer.concat([
             decipher.update(encryptedData),
@@ -69,5 +65,5 @@ export function decryptEmail(encryptedEmail: string): string {
     } catch (error) {
         throw new InternalServerErrorException(`Email decryption failed: ${error.message}`)
     }
-
 }
+

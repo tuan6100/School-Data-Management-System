@@ -82,7 +82,8 @@ export class StudentService {
   @Transactional()
   async update(id: number, updateStudentDto: UpdateStudentDto): Promise<Object> {
     // TODO: backup the old versions to Mongodb
-    const student = await this.em.findOne(Student, { studentId: id })
+    const studentId = await this.userService.findOneUser(id)
+    const student = await this.em.findOne(Student, { studentId: studentId })
     if (!student) throw new BadRequestException(`Student with id ${id} not found`)
     const updateData: Partial<Student> = {}
     if (updateStudentDto.firstName !== undefined) updateData.firstName = updateStudentDto.firstName

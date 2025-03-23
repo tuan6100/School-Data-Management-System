@@ -34,6 +34,13 @@ export class UserService {
     return `This action returns all user`
   }
 
+  async findOneUser(userAuthId: number): Promise<number | null> {
+    const user = await this.em.findOne(
+      UserAuth, {userAuthId: userAuthId}
+    )
+    return user?.userId ?? null
+  }
+
   async findOneEmail(userId: number, role: string): Promise<string | null> {
     const user = await this.em.findOne(
       UserAuth, {

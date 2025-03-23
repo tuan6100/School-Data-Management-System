@@ -1,11 +1,30 @@
-import {Controller, Get, Post, Body, Param, Delete, Query, Put} from "@nestjs/common"
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+  Put,
+  UseGuards,
+  Req,
+  UnauthorizedException,
+} from "@nestjs/common"
 import { StudentService } from "./student.service"
 import { CreateStudentDto } from "./dto/create-student.dto"
 import { UpdateStudentDto } from "./dto/update-student.dto"
+import { AccessTokenGuard, RefreshTokenGuard, RolesGuard } from "../app/config/app.guard"
+import { FastifyRequest } from "fastify"
+import { TokenService } from "../user/service/token.service"
+import { Roles } from "../app/decorator/app.decorator"
 
 @Controller(`${process.env.API_PREFIX}/student`)
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {}
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly tokenService: TokenService
+  ) {}
 
   @Post("/register")
   create(@Body() createStudentDto: CreateStudentDto) {
@@ -22,8 +41,15 @@ export class StudentController {
     return this.studentService.findOne(id)
   }
 
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Roles("student")
   @Put("/update")
-  update(@Query("id") id: number, @Body() updateStudentDto: UpdateStudentDto) {
+  update(@Req() req: FastifyRequest, @Body() updateStudentDto: UpdateStudentDto) {
+    const accessToken = req.headers.authorization?.split(" ")[1]
+    if (!accessToken) {
+      throw new UnauthorizedException("User is not authentication")
+    }
+    const id = this.tokenService.getSubjectFromToken(accessToken)
     return this.studentService.update(id, updateStudentDto)
   }
 
