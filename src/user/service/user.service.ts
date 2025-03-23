@@ -3,7 +3,7 @@ import { UpdateUserDto } from '../dto/update-user.dto'
 import UserAuth from "../entities/user.entity"
 import {Role} from "../enum/role.enum"
 import {EntityManager, Transactional} from "@mikro-orm/postgresql"
-import {encryptPassword, generateStrongPassword} from "../user.util"
+import { encryptEmail, encryptPassword, generateStrongPassword } from '../user.util';
 import {logger} from "@mikro-orm/nestjs";
 
 @Injectable()
@@ -13,15 +13,15 @@ export class UserService {
       private readonly em: EntityManager
   ) {}
 
-  @Transactional()
+
   async create(id: number, email: string, role: string) {
     const newStudentPassword = generateStrongPassword(id, role)
     const hashedPassword = await encryptPassword(newStudentPassword);
     const newUser = new UserAuth.Builder()
         .withUser(id)
-        .withEmail(email)
+        .withEmail(encryptEmail(email))
         .withPassword(hashedPassword)
-        .withRole(Role.STUDENT)
+        .withRole(Role[role.toUpperCase() as keyof typeof Role])
         .build();
     this.em.persistAndFlush(newUser).catch(e => {
       logger.error(e)
@@ -35,13 +35,19 @@ export class UserService {
   }
 
   async findOneEmail(userId: number, role: string): Promise<string | null> {
-    const user = await this.em.findOne(UserAuth, {userId: userId, role: Role[role]})
+    const user = await this.em.findOne(
+      UserAuth, {
+        userId: userId,
+        role: Role[role.toUpperCase()]
+      })
     return user?.email ?? null
   }
 
-  @Transactional()
+
   async update(updateUserDto: UpdateUserDto) {
-    const user = await this.em.findOne(UserAuth, { userId: updateUserDto.userId });
+    const user = await this.em.findOne(
+      UserAuth, { userId: updateUserDto.userId }
+    );
     if (!user) {
       throw new BadRequestException("User not found");
     }
@@ -55,9 +61,13 @@ export class UserService {
   }
 
 
-  @Transactional()
-  async remove(id: number) {
-    const user = await this.em.findOne(UserAuth, {userId: id})
+
+  async remove(id: number, role: string) {
+    const user = await this.em.findOne(
+      UserAuth, {
+        userId: id,
+        role: Role[role.toUpperCase()]
+      })
     if (!user) {
       throw new BadRequestException("User not found")
     }

@@ -8,6 +8,7 @@ import {createMap, Mapper} from "@automapper/core"
 import {UserService} from "../user/service/user.service"
 import {UpdateUserDto} from "../user/dto/update-user.dto"
 import {formatDateOnly} from "./student.util";
+import { decryptEmail } from '../user/user.util';
 
 @Injectable()
 export class StudentService {
@@ -27,8 +28,10 @@ export class StudentService {
     const newStudent = this.mapper.map(createStudentDto, CreateStudentDto, Student)
     try {
       await this.em.persistAndFlush(newStudent)
-      const newStudentEmail = `${newStudent.lastName}.${newStudent.firstName.charAt(0)}${newStudent.midName.charAt(0)}${newStudent.studentId}@school.edu.vn`
+      const newStudentEmail =
+        `${newStudent.lastName}.${newStudent.firstName.charAt(0)}${newStudent.midName.charAt(0)}${newStudent.studentId}@student.${process.env.EMAIL}`
       await this.userService.create(newStudent.studentId, newStudentEmail, "student")
+      this.logger.log("Sending responses...")
       return {
         userId: newStudent.studentId,
         citizenIdCode: newStudent.citizenIdCode,
@@ -58,15 +61,22 @@ export class StudentService {
     `
     return await this.em.getConnection().execute(sql, [size, offset])
      */
+    this.logger.log("Sending responses...")
     return this.em.find(Student, {}, {
       limit: size,
       offset: page * size
     })
   }
 
-
-  async findOne(id: number): Promise<Student | null> {
-    return this.em.findOne(Student, { studentId: id })
+  async findOne(id: number): Promise<Object | null> {
+    const student = await this.em.findOne(Student, { studentId: id });
+    if (!student) return null
+    const email = await this.userService.findOneEmail(id, "student") || "";
+    this.logger.log("Sending responses...")
+    return {
+      ...student,
+      email: decryptEmail(email)
+    };
   }
 
   @Transactional()
@@ -96,6 +106,7 @@ export class StudentService {
     }
     Object.assign(student, updateData);
     await this.em.persistAndFlush(student);
+    this.logger.log("Sending responses...")
     return {
       userId: student.studentId,
       citizenIdCode: student.citizenIdCode,
@@ -116,7 +127,7 @@ export class StudentService {
       throw new BadRequestException(`Student with ID ${id} not found`)
     }
     await this.em.removeAndFlush(student)
-    await this.userService.remove(id)
+    await this.userService.remove(id, "student")
     return `Student with ID ${id} has been removed`
   }
 }

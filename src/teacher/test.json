@@ -1,0 +1,15 @@
+{
+  "citizenIdCode": "5678901234567",
+  "firstName": "Đào",
+  "midName": "Đức",
+  "lastName": "Quang",
+  "dob": "1994-11-08",
+  "gender": "M",
+  "nationality": "vi",
+  "pob": "Hà Nội",
+  "address": "789 Tran Hung Dao Street, District 5, Ho Chi Minh City",
+  "educationLevel": "Thạc sĩ",
+  "contractNumber": "123456789",
+  "subject": 0
+
+}
