@@ -18,7 +18,7 @@ export class StudentController {
   }
 
   @Get("/get")
-  findOne(@Param("id") id: number) {
+  findOne(@Query("id") id: number) {
     return this.studentService.findOne(id)
   }
 
