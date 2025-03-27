@@ -1,13 +1,15 @@
-import {Entity,PrimaryKey, Property} from "@mikro-orm/core"
+import { Entity, Index, PrimaryKey, Property } from '@mikro-orm/core';
 import {Role} from "../enum/role.enum"
 import {AutoMap} from "@automapper/classes";
 
 @Entity({tableName: "users"})
+@Index({name: "email_password_idx", properties: ["email", "password"]})
+@Index({name: "user_role_idx", properties: ["userId", "role"]})
 export default class UserAuth {
     @PrimaryKey({fieldName: "user_auth_id", type: "bigint"}) userAuthId!: number
 
     @Property({fieldName: "user_id", type: "bigint"}) userId!: number
-    @Property({fieldName: "email", type: "varchar", length: 50, unique: true}) email!: string
+    @Property({fieldName: "email", type: "varchar", length: 64, unique: true}) email!: string
     @Property({fieldName: "password", type: "varchar", hidden: true})
     password!: string
     @Property({fieldName: "role", type: "enum"}) role!: Role

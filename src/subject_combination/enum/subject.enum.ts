@@ -10,7 +10,7 @@ export enum Subject {
     HISTORY ,
     CIVIC_EDU ,
     COMPUTER_SCIENCE ,
-    TECHNOLGY ,
+    TECHNOLOGY ,
 }
 
 export const SubjectNames: Record<Subject, string> = {
@@ -24,5 +24,5 @@ export const SubjectNames: Record<Subject, string> = {
     [Subject.HISTORY]: "history",
     [Subject.CIVIC_EDU]: "civic_edu",
     [Subject.COMPUTER_SCIENCE]: "computer_science",
-    [Subject.TECHNOLGY]: "technology"
+    [Subject.TECHNOLOGY]: "technology"
 };

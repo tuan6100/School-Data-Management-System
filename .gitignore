@@ -1,4 +1,8 @@
-.idea
-node_modules
-dist
+.idea/
+node_modules/
+dist/
 .env
+env/mongo/data/*
+env/postgres/data/*
+ssl/cert.pem
+ssl/key.pem

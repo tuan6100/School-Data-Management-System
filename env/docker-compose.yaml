@@ -8,14 +8,46 @@ services:
     image: postgres:16
     ports:
       - "5432:5432"
-    user: postgres
+    user: root
     environment:
       POSTGRES_USER: tuan
       POSTGRES_PASSWORD: 20226100
       POSTGRES_DB: high_school_db
+    privileged: true
     networks:
-        - default
+      - default
     volumes:
-      - ./postgres/data/:/var/lib/postgresql/data/
+      - ./postgres/data/:/var/lib/postgresql/data:z
       - ./postgres/config/init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: tuan
+      MONGO_INITDB_ROOT_PASSWORD: 20226100
+      MONGO_INITDB_DATABASE: high_school_db
+    volumes:
+      - type: bind
+        source: ./mongo/data
+        target: /data/db
+      - ./mongo/config/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - ./mongo/config/mongo-keyfile:/data/keyfile
+    networks:
+      - default
+    entrypoint:
+      - bash
+      - -c
+      - |
+        chmod 400 /data/keyfile
+        chown 999:999 /data/keyfile
+        exec docker-entrypoint.sh $$@
+    command: ["mongod", "--replSet", "rs0", "--keyFile", "/data/keyfile", "--auth"]
+    restart: always
+
+
+
+
