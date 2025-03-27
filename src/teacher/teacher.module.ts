@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
-import { TeacherService } from './teacher.service';
-import { TeacherController } from './teacher.controller';
+import { TeacherService } from './service/teacher.service';
+import { TeacherController } from './controller/teacher.controller';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Student } from '../student/entities/student.entity';
 import { AutomapperModule } from '@automapper/nestjs';

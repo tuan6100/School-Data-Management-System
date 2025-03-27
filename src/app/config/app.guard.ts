@@ -2,11 +2,13 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Unauthor
 import { JwtService } from "@nestjs/jwt"
 import { FastifyRequest } from "fastify"
 import { Reflector } from '@nestjs/core';
+import { AuthService } from '../../user/service/auth.service';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private authService: AuthService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -14,6 +16,9 @@ export class AccessTokenGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request)
     if (!token) {
       throw new UnauthorizedException("User is not authenticated")
+    }
+    if (!(await this.authService.verifyAccessToken(token))) {
+      throw new UnauthorizedException("This token is not available")
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -38,13 +43,19 @@ export class AccessTokenGuard implements CanActivate {
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private authService: AuthService
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
     const token = this.extractTokenFromHeader(request)
     if (!token) {
       throw new UnauthorizedException("No refresh token provided")
+    }
+    if (!(await this.authService.verifyRefreshToken(token))) {
+      throw new UnauthorizedException("This token is not available")
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
@@ -61,7 +72,7 @@ export class RefreshTokenGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: FastifyRequest): string | undefined {
-    const [type, token] = request.headers.authorization?.split(" ") ?? []
+    const [type, token] = request.headers['refresh-token']?.toString().split(" ") ?? []
     return type === "Bearer" ? token : undefined
   }
 }
@@ -69,7 +80,9 @@ export class RefreshTokenGuard implements CanActivate {
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [

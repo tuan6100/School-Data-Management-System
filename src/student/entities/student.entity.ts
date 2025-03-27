@@ -10,10 +10,10 @@ export class Student extends UserProfile {
     @PrimaryKey({ fieldName: "student_id", type: "bigint"})
     studentId!: number
 
-    @AutoMap() @Property({fieldName: "education_level", type: "int"}) educationLevel!: number
+    @AutoMap() @Property({fieldName: "education_level", type: "int"}) educationLevel: number
     @Property({fieldName: "admission_date", type: "date"}) admissionDate = new Date()
-    @Property({fieldName: "graduation_date", type: "date", nullable: true}) graduationDate?: Date
-    @Property({fieldName: "version", type: "int", default: 1}) version!: number
+    @Property({fieldName: "graduation_date", type: "date", nullable: true}) graduationDate: Date
+    @AutoMap() @Property({fieldName: "version", type: "int", default: 1}) version: number
 
     @ManyToOne(() => StudentParent, {nullable: true}) studentParent!: StudentParent
 
