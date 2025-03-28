@@ -71,9 +71,8 @@ export class AuthService {
         }
     }
 
-    async revokeToken(accessToken: string, refreshToken: string) {
+    async revokeAccessToken(accessToken: string) {
         try {
-            const userAuthId = this.tokenService.getSubjectFromToken(accessToken);
             const decodedAccessToken = this.jwtService.decode(accessToken);
             if (decodedAccessToken && decodedAccessToken.exp) {
                 const now = Math.floor(Date.now() / 1000);
@@ -84,9 +83,17 @@ export class AuthService {
                   ttl * 1000
                 );
             }
+
+        } catch (e) {
+            throw new Error(`Failed to blacklist token: ${e.message}`);
+        }
+    }
+    async revokeRefreshToken(refreshToken: string) {
+        try {
+            const userAuthId = this.tokenService.getSubjectFromToken(refreshToken);
             const decodedRefreshToken = this.jwtService.decode(refreshToken);
-            if (decodedRefreshToken && decodedRefreshToken.exp) {
-                const expiresAt = new Date(decodedRefreshToken.exp * 1000);
+            if (decodedRefreshToken && decodedRefreshToken.expiresIn) {
+                const expiresAt = new Date(decodedRefreshToken.expiresIn * 1000);
                 await this.tokenBlacklistModel.updateOne(
                   { userAuthId },
                   {
@@ -96,8 +103,8 @@ export class AuthService {
                   { upsert: true }
                 );
             }
-        } catch (error) {
-            throw new Error(`Failed to blacklist token: ${error.message}`);
+        } catch (e) {
+            throw new Error(`Failed to blacklist token: ${e.message}`);
         }
     }
 

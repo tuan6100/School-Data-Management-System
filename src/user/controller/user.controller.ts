@@ -70,7 +70,10 @@ export class UserController {
       if (!accessToken || !refreshToken) {
         throw new UnauthorizedException('Missing required tokens');
       }
-      await this.authService.revokeToken(accessToken, refreshToken);
+      await Promise.all([
+        this.authService.revokeAccessToken(accessToken),
+        this.authService.revokeRefreshToken(refreshToken)
+      ])
       return res.status(200).send({ message: 'Logout successful' });
     } catch (error) {
       throw new UnauthorizedException('Logout failed: ' + error.message);
