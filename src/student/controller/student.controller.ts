@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Param,
   Delete,
   Query,
   Put,
@@ -17,7 +16,6 @@ import { UpdateStudentDto } from "../dto/update-student.dto"
 import { AccessTokenGuard, RolesGuard } from "../../app/config/app.guard"
 import { FastifyRequest } from "fastify"
 import { TokenService } from "../../user/service/token.service"
-import { Roles } from "../../app/decorator/app.decorator"
 
 @Controller(`${process.env.API_PREFIX}/student`)
 export class StudentController {
@@ -37,8 +35,8 @@ export class StudentController {
   }
 
   @Get("/get")
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Roles("student")
+  // @UseGuards(AccessTokenGuard, RolesGuard)
+  // @Roles("student")
   findOne(@Query("id") id: number) {
     return this.studentService.findOne(id)
   }
