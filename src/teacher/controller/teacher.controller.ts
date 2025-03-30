@@ -5,7 +5,9 @@ import { UpdateTeacherDto } from '../dto/update-teacher.dto';
 import { AccessTokenGuard, RolesGuard } from '../../app/config/app.guard';
 import { Roles } from '../../app/decorator/app.decorator';
 
-@Controller(`${process.env.API_PREFIX}/teacher`)
+
+const apiPrefix = process.env.API_PREFIX || ""
+@Controller(`${apiPrefix}/teacher`)
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 

@@ -17,7 +17,9 @@ import { AccessTokenGuard, RolesGuard } from "../../app/config/app.guard"
 import { FastifyRequest } from "fastify"
 import { TokenService } from "../../user/service/token.service"
 
-@Controller(`${process.env.API_PREFIX}/student`)
+
+const apiPrefix = process.env.API_PREFIX || ""
+@Controller(`${apiPrefix}/student`)
 export class StudentController {
   constructor(
     private readonly studentService: StudentService,

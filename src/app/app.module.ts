@@ -30,7 +30,7 @@ import { MongooseModule } from "@nestjs/mongoose";
       }),
       MongooseModule.forRoot("mongodb://tuan:20226100@localhost:27017/high_school_db?directConnection=true&serverSelectionTimeoutMS=2000", {
             autoIndex: true,
-            autoCreate: true
+            autoCreate: true,
       }),
       AutomapperModule.forRoot({
           strategyInitializer: classes(),

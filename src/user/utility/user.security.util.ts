@@ -28,7 +28,7 @@ export function encryptPassword(password: string) {
 }
 
 
-const SECRET_KEY = scryptSync(`${process.env.EMAIL_ENCRYPTION_KEY}`, 'salt', 32)
+const SECRET_KEY = scryptSync(`${process.env.EMAIL_ENCRYPTION_KEY || ""}`, 'salt', 32)
 const FIXED_IV = Buffer.from('0123456789abcdef0123456789abcdef').subarray(0, 16)
 
 export function encryptEmail(email: string): string {

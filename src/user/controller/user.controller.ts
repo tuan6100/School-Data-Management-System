@@ -21,7 +21,8 @@ import { AccessTokenGuard, RefreshTokenGuard } from '../../app/config/app.guard'
 import { TokenDto } from '../../class/dto/token.dto';
 
 
-@Controller(`${process.env.API_PREFIX}/user`)
+const apiPrefix = process.env.API_PREFIX || ""
+@Controller(`${apiPrefix}/user`)
 export class UserController {
   constructor(
     private readonly userService: UserService,
