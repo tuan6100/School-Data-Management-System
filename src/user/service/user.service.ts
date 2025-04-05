@@ -20,7 +20,7 @@ export class UserService {
 
   @Transactional()
   async create(id: number, firstName: string, midName: string, lastName: string , role: string) {
-    const email = process.env.EMAIL || "com"
+    const email = process.env.EMAIL?? "com"
     const newStudentEmail = (role === "student") ?
       `${lastName}.${firstName.charAt(0)}${midName.charAt(0)}${id}@student.${email}` :
       `${lastName}.${firstName.charAt(0)}${midName.charAt(0)}${id}.${email}`

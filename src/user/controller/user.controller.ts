@@ -17,11 +17,12 @@ import * as process from "node:process"
 import { AuthService } from "../service/auth.service"
 import { LoginDto } from "../dto/login.dto"
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AccessTokenGuard, RefreshTokenGuard } from '../../app/config/app.guard';
 import { TokenDto } from '../../class/dto/token.dto';
+import { AccessTokenGuard } from '../../app/config/security/access_token.guard';
+import { RefreshTokenGuard } from '../../app/config/security/refresh_token.guard';
 
 
-const apiPrefix = process.env.API_PREFIX || ""
+const apiPrefix = process.env.API_PREFIX?? ""
 @Controller(`${apiPrefix}/user`)
 export class UserController {
   constructor(
@@ -48,18 +49,18 @@ export class UserController {
   }
 
   @Get("/get-all")
-  findAll() {
+  async findAll() {
     return this.userService.findAll()
   }
 
   @Get("/get")
-  findOne(@Query("id") id: number, @Param("role") role: string) {
+  async findOne(@Query("id") id: number, @Param("role") role: string) {
     return this.userService.findOneEmail(id, role)
   }
 
   @UseGuards(AccessTokenGuard)
   @Put("/update-password")
-  updatePassword(@Query("password") newPassword: string, @Body() updateUserDto: UpdateUserDto) {
+  async updatePassword(@Query("password") newPassword: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.updatePassword(updateUserDto, newPassword)
   }
 

@@ -16,7 +16,7 @@ export class TokenService {
       tokenType: "access"
     };
     return this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_ACCESS_KEY || process.env.JWT_KEY,
+      secret: process.env.JWT_ACCESS_KEY?? "",
       expiresIn: "5m"
     });
   }
@@ -27,8 +27,8 @@ export class TokenService {
       tokenType: "refresh"
     };
     return this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_KEY || process.env.JWT_KEY,
-      expiresIn: "1m"
+      secret: process.env.JWT_REFRESH_KEY?? "",
+      expiresIn: "1w"
     });
   }
 
